@@ -22,7 +22,7 @@ groups can also use Deployer to manage their own on-premise deployments of these
 Organization of Documentation
 _____________________________
 
-The Deployer documentation is roughly organized into three sections: :doc:`getting-started/index`, which covers installation
+The Deployer documentation is organized into three sections: :doc:`getting-started/index`, which covers installation
 and basic concepts; the `User Guide <users/index.html>`_, intended for operators who will use Deployer to manage deployments of one
 or more of the supported projects and the `Developers Guide <developers/index.html>`_, which is intended for individuals wishing to develop
 Deployer itself.

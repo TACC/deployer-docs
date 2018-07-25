@@ -39,7 +39,7 @@ The general format for executing commands via the the Deployer CLI is:
     $ ./deployer -p <project> -i <instance> -t <tenant> -a <action> -d <deployment_file>
 
 The arguments ``project``, ``instance``, etc, are defined in the following table
-and are covered in more detail in the User Guide.
+and are covered in more detail in the `Basic Concepts`_ section below.
 
 CLI Arguments:
 
@@ -92,15 +92,35 @@ CLI Arguments:
 Basic Concepts
 ==============
 
-Ansible
-+++++++
+The following concepts are important to understand before using Deployer.
 
-The Deployer contains scripts that can be launched from the command line to manage deployments on remote servers.
-It does so by first reading configuration files, server files, (optionally) extra files and command line arguments
-provided by the operator to generate temporary `Ansible <https://www.ansible.com/>`_ playbooks and then execute
-these playbooks on the remote servers specified. In general, the operator should not need to know anything about the
-generated Ansible scripts, and by default Deployer removes these files after each command. For debugging purposes,
-Deployer can be instructed to keep these files using the ``-k`` flag.
+Projects, Instances and Tenants
++++++++++++++++++++++++++++++++
+
+The notions of ``project``, ``instance`` and ``tenant`` are fundamental to Deployer's approach to managing deployments.
+A ``project`` is one of a set of systems Deployer knows how to manage, and will eventually include values "JupyterHub",
+"Abaco" and "Agave". The values for ``instance`` and ``tenant`` can be chosen by the operations team to best organize
+their infrastructure and configuration. One approach is to use ``instance`` values to distinguish physically isolated
+systems such as "development" and "production" and to use ``tenant`` values to distinguish logically separated aspects of
+systems (such as the DesignSafe tenant for JupyterHub or Abaco).
+
+Hierarchical Organization of Properties
++++++++++++++++++++++++++++++++++++++++
+
+The goal of the Deployer design is to minimize the time needed to write deployment files by eliminating duplicate
+the need to ever duplicate a property definition for a server or a project configuration. To achieve this goal,
+Deployer uses a hierarchical organization of properties for both servers and configuration, organized by ``project``,
+``instance`` and ``tenant``.
+
+In general, each ``instance`` belongs to exactly one ``project``, and
+each ``tenant`` belongs to exactly one ``instance``. Properties can be defined at a
+``project``, ``instance`` or ``tenant`` level, and property values defined at a more "local" level override those
+defined at a more "global" level. For example. if the ``jupyter_user_image`` property is defined for the "prod"
+``instance`` but also for the "DesignSafe" tenant within the "prod" instance, then the value defined for DesignSafe would
+be used for all deployment actions taken against that tenant.
+
+More details are given in the `User Guide <../users/index.html>`_.
+
 
 Deployment Files
 ++++++++++++++++
@@ -112,10 +132,13 @@ encourage teams to keep these files in a version control system and check them o
 Deployer. For example, the CIC team stores
 its own deployment files in a `bitbucket repository <https://bitbucket.org/tacc-cic/cic-deployments>`_.
 
-Hierarchical Organization of Properties
-+++++++++++++++++++++++++++++++++++++++
+Ansible
++++++++
 
-The goal of the Deployer design is to minimize the time needed to write deployment files by eliminating duplicate
-the need to ever duplicate a property definition for a server or a project configuration. To achieve this goal,
-Deployer uses a hierarchical organization of properties for both servers and configuration.
+The Deployer contains scripts that can be launched from the command line to manage deployments on remote servers.
+It does so by first reading configuration files, server files, (optionally) extra files and command line arguments
+provided by the operator to generate temporary `Ansible <https://www.ansible.com/>`_ playbooks and then execute
+these playbooks on the remote servers specified. In general, the operator should not need to know anything about the
+generated Ansible scripts, and by default Deployer removes these files after each command. For debugging purposes,
+Deployer can be instructed to keep these files using the ``-k`` flag.
 

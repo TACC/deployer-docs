@@ -18,6 +18,7 @@ Welcome to Deployer's Documentation!
    :caption: User Guide:
 
    users/index
+   users/projects
 
 .. toctree::
    :maxdepth: 2
