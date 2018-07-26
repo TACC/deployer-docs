@@ -16,17 +16,23 @@ files and run:
 
 .. code-block:: bash
 
-    $ export version=dev
-    $ docker run  -v $(pwd):/conf tacc/deployer:$version --setup
+    $ docker run  -v $(pwd):/conf tacc/deployer --setup
 
-This step pulls down the image and installs a small alias script, ``deployer.sh``, in the current working directory.
-With the alias installed, simply issue commands directly to the script; for e.g.
+This step pulls down the latest stable version of the Deployer Docker image and installs a small alias script,
+``deployer.sh``, in the current working directory.
+
+.. note:: Different versions of Deployer can be installed by specifying a TAG on the ``tacc/deployer`` image.
+
+
+With the alias installed, simply issue commands directly to the script. For example. validate your installation by
+executing:
 
 .. code-block:: bash
 
     $ ./deployer --help
 
-will display help.
+which should display the help.
+
 
 
 Basic Usage
@@ -54,9 +60,13 @@ CLI Arguments:
 |                                        |                                                                          |
 |                                        | Overrides that specified in the deployment file.                         |
 +----------------------------------------+--------------------------------------------------------------------------+
-| -d DEPLOYMENT, --deployment DEPLOYMENT | Relative path to deployment file, in the YAML format,                    |
-|                                        | describing the activity. This file should be in the                      |
-|                                        | current working directory or a sub directory therein.                    |
+| -t TENANT, --tenant TENANT             | Tenant to deploy, such as 'SD2E' or 'designsafe'.                        |
+|                                        |                                                                          |
+|                                        | Overrides that specified in the deployment file.                         |
++----------------------------------------+--------------------------------------------------------------------------+
+| -a ACTION, --action ACTION             | Action to take, such as 'deploy' or 'update'                             |
+|                                        | Must be a valid action for the project specified.                        |
+|                                        |                                                                          |
 +----------------------------------------+--------------------------------------------------------------------------+
 | -s SERVERS, --servers SERVERS          | Relative path to servers file, in the YAML format,                       |
 |                                        | of servers to target. This file should be in the                         |
@@ -104,22 +114,9 @@ their infrastructure and configuration. One approach is to use ``instance`` valu
 systems such as "development" and "production" and to use ``tenant`` values to distinguish logically separated aspects of
 systems (such as the DesignSafe tenant for JupyterHub or Abaco).
 
-Hierarchical Organization of Properties
-+++++++++++++++++++++++++++++++++++++++
+Actions
++++++++
 
-The goal of the Deployer design is to minimize the time needed to write deployment files by eliminating duplicate
-the need to ever duplicate a property definition for a server or a project configuration. To achieve this goal,
-Deployer uses a hierarchical organization of properties for both servers and configuration, organized by ``project``,
-``instance`` and ``tenant``.
-
-In general, each ``instance`` belongs to exactly one ``project``, and
-each ``tenant`` belongs to exactly one ``instance``. Properties can be defined at a
-``project``, ``instance`` or ``tenant`` level, and property values defined at a more "local" level override those
-defined at a more "global" level. For example. if the ``jupyter_user_image`` property is defined for the "prod"
-``instance`` but also for the "DesignSafe" tenant within the "prod" instance, then the value defined for DesignSafe would
-be used for all deployment actions taken against that tenant.
-
-More details are given in the `User Guide <../users/index.html>`_.
 
 
 Deployment Files
@@ -132,6 +129,23 @@ encourage teams to keep these files in a version control system and check them o
 Deployer. For example, the CIC team stores
 its own deployment files in a `bitbucket repository <https://bitbucket.org/tacc-cic/cic-deployments>`_.
 
+Hierarchical Organization of Properties
++++++++++++++++++++++++++++++++++++++++
+
+The goal of the Deployer design is to minimize the time needed to write deployment files by eliminating
+the need to ever duplicate a property definition for a server or a project configuration. To achieve this goal,
+Deployer uses a hierarchical organization of properties for both servers and configuration, organized by ``project``,
+``instance`` and ``tenant``.
+
+In general, each ``instance`` belongs to exactly one ``project``, and
+each ``tenant`` belongs to exactly one ``instance``. Properties can be defined at a
+``project``, ``instance`` or ``tenant`` level, and property values defined at a more "local" level override those
+defined at a more "global" level. For example. if the ``jupyter_user_image`` property is defined for the "prod"
+instance but also for the "DesignSafe" tenant within the "prod" instance, then the value defined for DesignSafe would
+be used for all deployment actions taken against that tenant.
+
+More details are given in the `User Guide <../users/index.html>`_.
+
 Ansible
 +++++++
 
@@ -139,6 +153,6 @@ The Deployer contains scripts that can be launched from the command line to mana
 It does so by first reading configuration files, server files, (optionally) extra files and command line arguments
 provided by the operator to generate temporary `Ansible <https://www.ansible.com/>`_ playbooks and then execute
 these playbooks on the remote servers specified. In general, the operator should not need to know anything about the
-generated Ansible scripts, and by default Deployer removes these files after each command. For debugging purposes,
+generated Ansible scripts, and by default, Deployer removes these files after each command. For debugging purposes,
 Deployer can be instructed to keep these files using the ``-k`` flag.
 

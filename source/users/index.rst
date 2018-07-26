@@ -22,11 +22,11 @@ is only defined within a given instance.
 Configs
 -------
 Operations teams put desired project configuration in YML files ending in the ``.configs`` extension. The config file
-to be used can be specified at the command line (-c) or in the deployment.yml file. Otherwise, the first file with a
+to be used can be specified at the command line (``-c``) or in the deployment.yml file. Otherwise, the first file with a
 ``.configs`` extension in the current working directory will be used.
 
 Each config must specify a project and can be optionally assigned to an instance or tenant. These are specified by
-defining a YML key in thr format ``<project>.<instance>.<tenant>`` and then defining the properties using valid
+defining a YML key in the format ``<project>.<instance>.<tenant>`` and then defining the properties using valid
 YML within that stanza. Configs can be complex YML objects.
 
 Consider the following example config file:
@@ -45,10 +45,15 @@ Consider the following example config file:
         use_stock_nfs: true
         # prod didn't define images, etc., so it should inherit from the above.
 
+        # here's an example of a config leveraging a complex YML object:
+        volume_mounts:
+          - /corral-repl/tacc/NHERI/shared/{username}:/home/jupyter/MyData:rw
+          - /corral-repl/tacc/NHERI/published:/home/jupyter/NHERI-Published:ro
+
     jupyterhub.staging.designsafe:
         jupyterhub_image: taccsciapps/jupyterhub:0.8.1
         jupyter_user_image: taccsciapps/jupyteruser-ds:1.2.0rc9
-        # these image properties override the global onces defined above, but just for Designsafe staging
+        # these image properties ^^ override the global onces defined above, but just for Designsafe staging
         cull_idle_notebook_timeout: 259200
         notebook_memory_limit: 3G
         notebook_offer_lab: True

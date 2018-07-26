@@ -1,3 +1,12 @@
+Overview
+--------
+
+This section of the documentation is intended for individuals who want to develop the Deployer project itself. Before
+starting this section, make sure to go through the :doc:`getting-started/index` section and
+install the Deployer CLI.
+
+
+
 High Level Algorithm Design of Core CLI
 ---------------------------------------
 
