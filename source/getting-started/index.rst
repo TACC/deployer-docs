@@ -117,7 +117,8 @@ systems (such as the DesignSafe tenant for JupyterHub or Abaco).
 Actions
 +++++++
 
-
+Actions define what procedure should be taken on the deployment. Actions are defined on a project by project basis,
+though some standard actions such as ``deploy`` are available for all projects.
 
 Deployment Files
 ++++++++++++++++
