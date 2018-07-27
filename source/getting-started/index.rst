@@ -11,15 +11,15 @@ Installation
 To install the Deployer CLI, the only dependency is Docker. If you do not have Docker installed, see the
 `Official Docs <https://docs.docker.com/install/>`_ for installation instructions for your platform.
 
-Once Docker is installed, change into a directory that will contain your configuration
-files and run:
+Once Docker is installed, change into a temporary directory and run:
 
 .. code-block:: bash
 
-    $ docker run  -v $(pwd):/conf tacc/deployer --setup
+    $ docker run  -v $(pwd):/conf tacc/deployer --setup && mv deployer /usr/local/bin/deployer
 
-This step pulls down the latest stable version of the Deployer Docker image and installs a small alias script,
-``deployer.sh``, in the current working directory.
+The first step pulls down the latest stable version of the Deployer Docker image and installs a small alias script,
+``deployer``, in the current working directory. The second stop is optional but recommended so that the ``deployer``
+script is on ``$PATH`` and not left in the temporary directory.
 
 .. note:: Different versions of Deployer can be installed by specifying a TAG on the ``tacc/deployer`` image.
 
@@ -29,10 +29,9 @@ executing:
 
 .. code-block:: bash
 
-    $ ./deployer --help
+    $ deployer --help
 
 which should display the help.
-
 
 
 Basic Usage
@@ -42,7 +41,17 @@ The general format for executing commands via the the Deployer CLI is:
 
 .. code-block:: bash
 
-    $ ./deployer -p <project> -i <instance> -t <tenant> -a <action> -d <deployment_file>
+    $ deployer <command> -p <project> -i <instance> -t <tenant> -a <action> -d <deployment_file>
+
+For any kind of deployment activity, one will use the ``execute`` command to the Deployer CLI, which is its default
+value and can be omitted. However, the Deployer CLI recognizes a few other informational commands. For example, we can
+get the version of the installed Deployer using the ``version`` command which requires no other arguments:
+
+.. code-block:: bash
+
+  $ deployer version
+  TACC Deployer
+  Version: 0.1-rc1
 
 The arguments ``project``, ``instance``, etc, are defined in the following table
 and are covered in more detail in the `Basic Concepts`_ section below.
@@ -109,7 +118,23 @@ Projects, Instances and Tenants
 
 The notions of ``project``, ``instance`` and ``tenant`` are fundamental to Deployer's approach to managing deployments.
 A ``project`` is one of a set of systems Deployer knows how to manage, and will eventually include values "JupyterHub",
-"Abaco" and "Agave". The values for ``instance`` and ``tenant`` can be chosen by the operations team to best organize
+"Abaco" and "Agave". To see what projects are supported in an existing Deployer installation use the ``list_projects``
+command:
+
+.. code-block:: bash
+
+  $ deployer list_projects
+    Available Projects:
+
+    TACC Integrated JupyterHub
+    **************************
+    id: jupyterhub
+    Description: Customized JupyterHub enabling deeper integration and
+    ease of use of TACC resources from within running notebooks.
+    Docs: http://cic-deployer.readthedocs.io/en/latest/users/projects.html#jupyterhub
+
+
+The values for ``instance`` and ``tenant`` can be chosen by the operations team to best organize
 their infrastructure and configuration. One approach is to use ``instance`` values to distinguish physically isolated
 systems such as "development" and "production" and to use ``tenant`` values to distinguish logically separated aspects of
 systems (such as the DesignSafe tenant for JupyterHub or Abaco).
@@ -119,6 +144,16 @@ Actions
 
 Actions define what procedure should be taken on the deployment. Actions are defined on a project by project basis,
 though some standard actions such as ``deploy`` are available for all projects.
+
+To see which actions are available for a given project, use the ``list_actions`` command, specifying a project; e.g.:
+
+.. code-block:: bash
+
+  $ deployer -p jupyterhub list_actions
+    Available actions: ['deploy']
+
+Note that the value to the project argument must be a project id, as output by the ``list_projects`` command.
+
 
 Deployment Files
 ++++++++++++++++
