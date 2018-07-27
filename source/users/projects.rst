@@ -112,7 +112,7 @@ We highlight some additional considerations regarding JupyterHub configuration.
 .. code-block:: bash
 
     $ curl -u <service_account>:<service_account_password> \
-    -d "clientName=<pick_a_name>&callbackUrl=https://<jupyter_staging_domain>/hub/oauth_callback" \
+    -d "clientName=<you_pick>&callbackUrl=https://<jupyterhub_host>/hub/oauth_callback" \
     https://<tenant_base_url>/clients/v2
 
 Integrating with TAS
