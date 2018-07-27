@@ -15,7 +15,7 @@ Once Docker is installed, change into a temporary directory and run:
 
 .. code-block:: bash
 
-    $ docker run  -v $(pwd):/conf tacc/deployer --setup && mv deployer /usr/local/bin/deployer
+    $ docker run -v $(pwd):/conf tacc/deployer --setup && mv deployer /usr/local/bin/deployer
 
 The first step pulls down the latest stable version of the Deployer Docker image and installs a small alias script,
 ``deployer``, in the current working directory. The second stop is optional but recommended so that the ``deployer``
@@ -117,9 +117,10 @@ Projects, Instances and Tenants
 +++++++++++++++++++++++++++++++
 
 The notions of ``project``, ``instance`` and ``tenant`` are fundamental to Deployer's approach to managing deployments.
-A ``project`` is one of a set of systems Deployer knows how to manage, and will eventually include values "JupyterHub",
-"Abaco" and "Agave". To see what projects are supported in an existing Deployer installation use the ``list_projects``
-command:
+A ``project`` is one of a set of systems Deployer knows how to manage, and will eventually include the TACC JupyterHub,
+Abaco and Agave projects. When working with Deployer CLI, projects are referenced by a project id. To see information
+about what projects are supported in an existing Deployer installation, including their id's, use the
+``list_projects`` command:
 
 .. code-block:: bash
 
