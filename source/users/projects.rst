@@ -105,6 +105,16 @@ We highlight some additional considerations regarding JupyterHub configuration.
   or container execution will fail. Unless using the NFS management cluster, Deployer assumes these directories have
   been created already.
 
+* For security purposes, ensure that the ``oauth_client_secret`` is in the ``.passwords`` file
+
+* To generate an OAuth client key and secret for your JupyterHub instance, use a command like the following:
+
+.. code-block:: bash
+
+    $ curl -u <service_account>:<service_account_password> \
+    -d "clientName=<pick_a_name>&callbackUrl=https://<jupyter_staging_domain>/hub/oauth_callback" \
+    https://<tenant_base_url>/clients/v2
+
 Integrating with TAS
 ++++++++++++++++++++
 

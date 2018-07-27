@@ -2,8 +2,8 @@ Overview
 --------
 
 This section of the documentation is intended for individuals planning to use Deployer to mange their own deployments of
-CIC projects. Before starting this section, make sure to go through the :doc:`getting-started/index` section and
-install the Deployer CLI.
+CIC projects. Before starting this section, make sure to go through the
+`Getting Started <../getting-started/index.html>`_ section and install the Deployer CLI.
 
 Terminology
 -----------
@@ -139,19 +139,11 @@ Passwords
 ---------
 
 In Deployer, password files are used to specify sensitive properties such as database passwords or the contents of an
-SSL certificate. The passwords file to be used can be specified at the command line (-z) or in the deployment.yml file. Otherwise, the first file with a .passwords extension in the current working directory will be used.
-Each password can be optionally assigned to a project, instance or tenant.
-Configs are arbitrary key:value pairs, and the values can be complex objects.
+SSL certificate. The passwords file to be used can be specified at the command line (-z) or in the deployment.yml file.
+Otherwise, the first file with a .passwords extension in the current working directory will be used. Password files
+are the same as config files in all regards; for example, each password is either a global proerty or (optionally)
+is assigned to a project, instance or tenant and password properties can be arbitrary YML objects.
 
-ensure that the ``oauth_client_secret`` is in the ``.passwords`` file
-to generate:
-
-.. code-block:: bash
-
-    $ curl -u <service_account>:<service_account_password> -d "clientName=jupyterhub_staging&callbackUrl=https://<jupyter_staging_domain>/hub/oauth_callback" https://api.3dem.org/clients/v2
-
-The consumerKey returned maps to ``<project>_oauth_client_id``
-consumerSecret returned maps to ``<project>_oauth_client_secret``
 
 extras_dir
 ----------

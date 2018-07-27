@@ -24,7 +24,7 @@ script is on ``$PATH`` and not left in the temporary directory.
 .. note:: Different versions of Deployer can be installed by specifying a TAG on the ``tacc/deployer`` image.
 
 
-With the alias installed, simply issue commands directly to the script. For example. validate your installation by
+With the alias installed, simply issue commands directly to the script. For example, validate your installation by
 executing:
 
 .. code-block:: bash
