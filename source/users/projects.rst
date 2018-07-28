@@ -38,6 +38,8 @@ a minimum of two servers meeting the following requirements:
 
 * Ports must be opened between manager and workers to enable communication. For each server, the optional ``private_ip``
   attribute may be specified. If is it, communication will happen on this IP. Otherwise, it will happen on ``ssh_host``.
+  If firewalld and/or iptables are running on the hosts, make sure that both the local IP and the 172.17.0.0 subnets
+  (the Docker0 bridge) are opened.
 
 In addition to a Docker 1.11 Swarm cluster, an NFS management cluster will be constructed from the ``hub`` node (nfs server)
 to all ``worker`` nodes (nfs clients). This NFS management cluster is required as it is used to persist login data from
@@ -55,8 +57,11 @@ The following configuration properties are required.
 
 * ``jupyterhub_oauth_client_id`` - The ID for the OAuth client that JupyterHub will use to authenticate users.
 
-* ``jupyterhub_oauth_client_secret`` - The secret for the OAuth client that JupyterHub will use to authenticate users.
-  It is recommended that the ``jupyterhub_oauth_client_secret`` be stored in a ``.passwords`` file.
+* ``jupyterhub_oauth_client_secret`` - The JupyterHub requires a valid OAuth client for the tenant being used, and this
+  OAuth client *must* be registered with the required ``callbackUrl`` for the hub, which has the form
+  ``https://<jupyterhub_host>/hub/oauth_callback``. See `Additional Considerations`_ below for more details.
+  Also, it is recommended that the ``jupyterhub_oauth_client_secret``
+  be stored in a ``.passwords`` file.
 
 
 The following configuration properties are optional, though some are strongly encouraged; see below.
