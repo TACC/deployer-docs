@@ -53,15 +53,18 @@ The following configuration properties are required.
 
 * ``tenant`` - The tenant id this JupyterHub belongs to. Determines the OAuth server to use.
 
+* ``jupyterhub_tenant_base_url`` - The base URL for the OAuth server. Note: this property is only required if not
+  using a standard TACC tenant; for standard TACC tenants, Deployer will automatically derive the base URL.
+
 * ``jupyterhub_host`` - The domain to serve JupyterHub on (without the protocol); e.g. "jupyter.designsafe-ci.org".
 
 * ``jupyterhub_oauth_client_id`` - The ID for the OAuth client that JupyterHub will use to authenticate users.
-
-* ``jupyterhub_oauth_client_secret`` - The JupyterHub requires a valid OAuth client for the tenant being used, and this
+  The JupyterHub requires a valid OAuth client for the tenant being used, and this
   OAuth client *must* be registered with the required ``callbackUrl`` for the hub, which has the form
   ``https://<jupyterhub_host>/hub/oauth_callback``. See `Additional Considerations`_ below for more details.
-  Also, it is recommended that the ``jupyterhub_oauth_client_secret``
-  be stored in a ``.passwords`` file.
+
+* ``jupyterhub_oauth_client_secret`` - The corresponding client secret for the OAuth client. Note: it is recommended
+  that the ``jupyterhub_oauth_client_secret`` be stored in a ``.passwords`` file.
 
 
 The following configuration properties are optional, though some are strongly encouraged; see below.
