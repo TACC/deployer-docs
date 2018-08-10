@@ -117,18 +117,18 @@ In general, server files should conform to the following requirements:
 
 * Written in the YML format ending in the ``.hosts`` extension.
 * Each entry in the YML file should be either a global property to apply to all servers in the file (e.g., ``ssh_key``
-for the SSH key Deployer should use to access to the servers, as in the above example) or a stanza containing
-descriptions of one or more servers.
+  for the SSH key Deployer should use to access to the servers, as in the above example) or a stanza containing
+  descriptions of one or more servers.
 * Each host must be assigned to a project and can be optionally assigned to an instance or tenant. The project, instance
-and tenant are specified through the YML key in dot notation, ``<project>.<instance>.<tenant>``
+  and tenant are specified through the YML key in dot notation, ``<project>.<instance>.<tenant>``
 * Each host must define ``ssh_host``, the IP address or domain of the host and ``host_id``, a unique name for the host.
 * The ``ssh_key`` and ``ssh_user`` properties are also required for all hosts, though they can be inherited. The
-``ssh_key`` parameter must be a relative path from the directory where Deployer is run to a key file that can be used to
-access the server via SSH, and the ``ssh_user`` parameters must be a string representing the user account to SSH as.
+  ``ssh_key`` parameter must be a relative path from the directory where Deployer is run to a key file that can be used to
+  access the server via SSH, and the ``ssh_user`` parameters must be a string representing the user account to SSH as.
 * Each host can optionally provide a list of ``roles``. Project scripts use ``roles`` to distinguish which services
-should run on which servers. The roles attribute must be a list.
+  should run on which servers. The roles attribute must be a list.
 * Each host can have a additional key:value pairs defined by the operators used for further filtering (e.g.
-“cloud: jetstream”)
+  “cloud: jetstream”)
 
 The servers file to be used can be specified at the command line (-s) or in the deployment.yml file. Otherwise,
 the first file with a .hosts extension in the current working directory will be used.
