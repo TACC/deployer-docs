@@ -13,6 +13,7 @@ projects is planned:
 * TACC's Integrated JupyterHub
 * Abaco API
 * Agave API
+* OAuth Gateway
 
 The CIC group uses Deployer internally to manage deployments of its hosted offerings of the above systems, but external
 groups can also use Deployer to manage their own on-premise deployments of these systems.
