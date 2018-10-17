@@ -170,12 +170,18 @@ for project mounts in the DesignSafe tenant.
 `Coming soon...`
 
 
-Abaco
-=====
+Abaco API
+=========
 
 `Coming soon...`
 
-Agave
-=====
+Agave API
+=========
+
+`Coming soon...`
+
+
+OAuth Gateway
+=============
 
 `Coming soon...`
