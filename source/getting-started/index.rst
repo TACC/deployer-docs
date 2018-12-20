@@ -1,7 +1,7 @@
 Getting Started
 ---------------
 
-This Getting Started guide will conver installing the Deployer CLI as well as some initial basic concepts needed before
+This Getting Started guide will cover installing the Deployer CLI as well as some initial basic concepts needed before
 moving to the `User Guide <../users/index.html>`_.
 
 
@@ -18,7 +18,7 @@ Once Docker is installed, change into a temporary directory and run:
     $ docker run -v $(pwd):/conf tacc/deployer --setup && mv deployer /usr/local/bin/deployer
 
 The first step pulls down the latest stable version of the Deployer Docker image and installs a small alias script,
-``deployer``, in the current working directory. The second stop is optional but recommended so that the ``deployer``
+``deployer``, in the current working directory. The second step is optional but recommended so that the ``deployer``
 script is on ``$PATH`` and not left in the temporary directory.
 
 .. note:: Different versions of Deployer can be installed by specifying a TAG on the ``tacc/deployer`` image.

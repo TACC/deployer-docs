@@ -178,10 +178,166 @@ Abaco API
 Agave API
 =========
 
-`Coming soon...`
+TACC's Agave API provides services for enabling computational experiments on HPC and HTC resources. For more information
+on the API, see TACC's official `documentation <https://agave.readthedocs.io>`_.
+
+The Agave API is currently organized into frontend services and worker components. These agents interact through a
+persistence layer comprised of a Mongo and MySQL database and a Beanstalk and RabbitMQ queue. All Agave components are
+packaged into Docker images and configured through environment variables.
+
+In addition to the persistence layer, the Agave services are secured with `JWT <https://tools.ietf.org/html/rfc7519>`_
+authentication and some authorization aspects through claims. The services are built to integrate with the
+TACC `OAuth Gateway`_, though in theory, any API Gateway capable of generating a conformant JWT could work.
+
+
+Minimal Quickstart
+++++++++++++++++++
+
+Agave can be deployed in a "sandbox" configuration for evaluation and/or prototyping purposes with minimal configuration.
+When using this setup, Deployer installs and runs all required Agave databases and automatically wires up the Agave
+services to those databases.
+
+.. note::
+  The minimal quickstart does not include settings for changing the default database passwords, so it is insecure and
+  should not be used in production!
+
+The minimal quickstart required three servers (or VMs) - one for the OAuth Gateway, one for the Agave components, and
+a third for the persistence layer. A hosts file and a config file will be required. The following samples can be used
+as a starting point for deploying a complete sandbox, including all AGave components and databases and the OAuth Gateway:
+
+Hosts File Sample
+~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    ssh_user: root
+    ssh_key: my_ssh.key
+
+    oauth.sandbox.dev:
+        hosts:
+            - host_id: oauth-sbox
+              ssh_host: <IP_1>
+              roles:
+                - oauth
+            - host_id: oauth-dbs-sbox
+              ssh_host: <IP_3>
+              roles:
+                - all_oauth_dbs
+
+    agave.sandbox:
+        hosts:
+            - host_id: ag-sbox-all
+              ssh_host: <IP_2>
+              roles:
+                - agave_frontends
+                - agave_workers
+            - host_id: ag-sbox-dbs
+              ssh_host: <IP_3>
+              roles:
+                - all_agave_dbs
+
+Notes:
+
+* Replace ``<IP_1>, <IP_2>, <IP_3>`` with actual IPs or hostnames for your servers. Deployer must be able to SSH to these IPs to install the software.
+* We have used ``sanbox`` as the instance identifier; this can be changed, as desired.
+* We have used ``dev`` as the tenant identifier; just as with the instance identifier, this can be changed.
+
+
+Configs File Sample
+~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    oauth.sandbox.dev:
+        base_url: dev.api.example.com
+        agave_frontend_host: <IP_2>
+        use_cic_ldap: True
+
+
+Notes:
+
+* We have not specified any Agave configs as technically they are not required for a minimal setup. However, without setting at a minimum database password condfigs, the deployment will not be secure.
+* The value of ``base_url`` (``dev.api.example.com`` in the example above) will be the primary URL for all APIs. This should be changed to a domain owned by the organization.
+* Using the above config, the OAuth Gateway will be deployed with self-signed certificates. See the `OAuth Gateway`_ section for additional configuration options, including deploying with valid certiciates.
+
+A Word on Ports
+~~~~~~~~~~~~~~~
+
+The OAuth Gateway and Agave projects communicate with the various databases on specific ports. Therefore, the database
+ports on ``<IP_3>`` must be reachable from ``<IP_1>`` and ``<IP_2>``. If that is not possible using the ``ssh_host``
+value configured in the hosts file, separate configs can be provided to specify the IP to use for each database, e.g.,
+``agave_mysql_host`` -- see `Service and Host Configs`_ for a complete list.
+
+For example, when using a cloud provider such as OpenStack, it is often possible to assign servers an IP on a private
+network and for the OAuth Gateway and Agave services to use that IP for communication to the databases.
+
+
+Deploying the Sandbox
+~~~~~~~~~~~~~~~~~~~~~
+
+Use the Deployer CLI to deploy the sandbox with two commands. First, deploy the Agave project as follows:
+
+.. code-block:: bash
+
+    $ deployer -p agave -i sandbox -a deploy
+
+Next, deploy the OAuth Gateway project, which requires specifying the tenant in addition to the instance:
+
+.. code-block:: bash
+
+    $ deployer -p oauth -i sandbox -t dev -a deploy
+
+Note that these commands do not explicitly specify the hosts and configs file to use. Deployer will use the first file
+it finds with extension `.hosts` (respectively, `.configs`) in the current working directory. If you have multiple
+hosts or configs files in the current working directory, specify the correct one using the ``-s`` (respectively, ``-c``)
+flags. See the `User Guide <../users/index.html>`_ for more details.
+
+
+Service and Host Configs
+++++++++++++++++++++++++
+
+Like other Deployer projects, Agave deployments leverage settings specified on hosts, either through special roles or
+other attributes, and global settings specified through the configs file. The configs object should contain an instance
+identifier and any Agave attributes to apply to all services in the instance.
+
+At a minimum, the following global configs must be specified:
+
+* ``agave_mysql_host`` - Hostname or IP address for the MySQL database.
+* ``agave_mysql_user`` - MySQL user to use.
+* ``agave_mysql_password`` - Password associated with MySQL user.
+* ``mysql_root_user`` - MySQL root user; used to create schemas, etc.
+* ``mysql_root_password`` - Password associated with MySQL root user.
+
+* ``agave_mongo_host`` - Hostname or IP address for the MongoDB database.
+* ``agave_mongo_user`` - MongoDB user to use.
+* ``agave_mongo_password`` - Password associated with MongoDB user.
+* ``mongo_admin_user`` - Admin mongo user; used to create collections, indexes, etc.
+* ``mongo_admin_password`` - Admin mongo password.
+
+
+* ``agave_beanstalk_host`` - Hostname or IP address for the beanstalk instance.
+
+* ``agave_rabbitmq_host`` - Hostname or IP address for the RabbitMQ instance.
+
+Note: the database host attribute will be derived automatically if a host in the servers file has the corresponding role,
+e.g., ``agave_mysql`` or ``all_agave_dbs``.
+
+
+Agave Roles
+~~~~~~~~~~~
+
+The following roles can be set on a per-host basis to deploy specific components of Agave on a given server.
+
+* ``agave_frontends`` - Run a set of Agave Frontend services. Looks for the ``agave_frontends`` attribute to determine which services to run. If that attribute is not defined, all frontend services will be run.
+* ``agave_workers`` - Run a set of Agave Workers. Looks for the ``agave_workers`` attribute to determine which workers to run. If that attribute is not defined, all workers will be run.
 
 
 OAuth Gateway
 =============
 
-`Coming soon...`
+The TACC OAuth Gateway provides two primary functions: 1) an OAuth2 provider server and 2) an API Gateway and reverse
+proxy to APIs registered with the server. When a request is made to a registered API using an OAuth access token, the
+API Gateway function will generate a JWT corresponding to the identity information contained within the token before
+forwarding the request to the actual service.
+
+
