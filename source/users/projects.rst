@@ -323,13 +323,17 @@ Note: the database host attribute will be derived automatically if a host in the
 e.g., ``agave_mysql`` or ``all_agave_dbs``.
 
 
-Agave Roles
-~~~~~~~~~~~
+Roles
+~~~~~
 
 The following roles can be set on a per-host basis to deploy specific components of Agave on a given server.
 
 * ``agave_frontends`` - Run a set of Agave Frontend services. Looks for the ``agave_frontends`` attribute to determine which services to run. If that attribute is not defined, all frontend services will be run.
 * ``agave_workers`` - Run a set of Agave Workers. Looks for the ``agave_workers`` attribute to determine which workers to run. If that attribute is not defined, all workers will be run.
+
+Attributes
+~~~~~~~~~~
+
 
 
 OAuth Gateway
